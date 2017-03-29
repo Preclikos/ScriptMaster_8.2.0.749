@@ -1054,7 +1054,7 @@ window.ScriptEditor = function(config,$,Q)	{
 	};
 	
 	/// <summary>
-	/// Sets field background color in current form
+	/// Sets field disabled in current form
 	/// </summary>
 	/// <param name="args" type="array" mayBeNull="false" optional="false" >
 	/// @args[0]	:	field name {String,Link}
@@ -1080,6 +1080,12 @@ window.ScriptEditor = function(config,$,Q)	{
 		});
 	};
 	
+	/// <summary>
+	/// closes opportunity as won/lost
+	/// </summary>
+	/// <param name="args" type="array" mayBeNull="false" optional="false" >
+	/// @args[0]	:	won {String,Link}
+	/// </param>
 	var closeOpportunity = function(args){
 		var se = this;
 		return new Q.Promise(function(resolve,reject){
@@ -1091,6 +1097,73 @@ window.ScriptEditor = function(config,$,Q)	{
 				console.log("|#|Fn: "+se._config.FunctionName+" >>>ended started<<< result: won: '"+"success"+"'|#|");
 				resolve(true);
 			})
+		});
+	}
+	
+	/// <summary>
+	/// Adds notification to form
+	/// </summary>
+	/// <param name="args" type="array" mayBeNull="false" optional="false" >
+	/// @args[0]	:	notification id {String,Link}
+	/// @args[1]	:	notification level {String,Link}
+	/// @args[1]	:	notification message {String,Link}
+	/// </param>
+	var addNotification = function(args){
+		var se = this;
+		return new Q.Promise(function(resolve,reject){
+			var a = se._checkForLink(args[0]);
+			var b = se._checkForLink(args[1]);
+			var c = se._checkForLink(args[2]);
+			Q.Promise.all([a,b,c]).then(function(values){
+				var nId = values[0];
+				var nLevel = values[1];
+				var nMessage = values[2];
+				console.log("|#|Fn: "+se._config.FunctionName+" >>>addNotification started<<< input: id: '"+nId+"' message: '"+nMessage+"'|#|");
+				Xrm.Page.ui.setFormNotification(nMessage, nLevel, nId);
+				console.log("|#|Fn: "+se._config.FunctionName+" >>>addNotification ended<<< result: '"+"success"+"'|#|");
+				resolve(nId);
+			});
+		});
+	};
+	
+	/// <summary>
+	/// Removes notification from form
+	/// </summary>
+	/// <param name="args" type="array" mayBeNull="false" optional="false" >
+	/// @args[0]	:	notification id {String,Link}
+	/// </param>
+	var removeNotification = function(args){
+		var se = this;
+		return new Q.Promise(function(resolve,reject){
+			var a = se._checkForLink(args[0]);
+			Q.Promise.all([a]).then(function(values){
+				var nId = values[0];
+				console.log("|#|Fn: "+se._config.FunctionName+" >>>removeNotification started<<< input: id: '"+nId+"'|#|");
+				var result = Xrm.Page.ui.clearFormNotification(nId);
+				console.log("|#|Fn: "+se._config.FunctionName+" >>>removeNotification ended<<< result: '"+result+"'|#|");
+				resolve(result);
+			});
+		});
+	};
+	
+	/// <summary>
+	/// gets form type
+	/// returns string:
+	/// 0:Undefined
+	/// 1:Create
+	/// 2:Update
+	/// 3:Read Only
+	/// 4:Disabled
+	/// 6:Bulk Edit
+	/// </summary>
+	/// <param name="args" type="array" mayBeNull="false" optional="false" >
+	/// @args	:	none
+	/// </param>
+	var getFormType = function(args){
+		var se = this;
+		return new Q.Promise(function(resolve,reject){
+			var formType = Xrm.Page.ui.getFormType().toString();
+			resolve(formType);
 		});
 	}
 	
@@ -1197,6 +1270,9 @@ window.ScriptEditor = function(config,$,Q)	{
 		setFormFieldColor	:	setFormFieldColor,
 		setFormFieldDisabled:	setFormFieldDisabled,
 		closeOpportunity	:	closeOpportunity,
+		addNotification		:	addNotification,
+		removeNotification	:	removeNotification,
+		getFormType			:	getFormType,
 		cachedCalls			:	{}
 	};
 };
