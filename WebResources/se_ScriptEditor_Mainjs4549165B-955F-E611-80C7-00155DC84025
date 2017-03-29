@@ -374,7 +374,7 @@ window.ScriptEditor = function(config,$,Q)	{
 					}
 					se.retrieveSingleEA([entity,id,property]).then(function(data){
 						//TODO: prepare for multiple properties
-						var result = data[property];
+						var result = data[property] || "";
 						if(associatedLookupEntityName != ""){
 							if(result!=null){
 								se.retrieveSingleEA([associatedLookupEntityName,result,associatedLookupProperty]).then(function(data){
@@ -396,8 +396,8 @@ window.ScriptEditor = function(config,$,Q)	{
 				var val = Xrm.Page.getAttribute(fieldName).getValue() || "";
 				if(val != ""){
 					if(val[0][property] != undefined && associatedLookupEntityName == ""){
-						console.log("|#|Fn: "+se._config.FunctionName+" >>>getFormLookupValue ended<<< result: "+val[0][property]+"|#|");
-						resolve(val[0][property]);
+						console.log("|#|Fn: "+se._config.FunctionName+" >>>getFormLookupValue ended<<< result: "+(val[0][property]||"")+"|#|");
+						resolve((val[0][property]||""));
 					}else{
 						var id = val[0].id.replace(/{|}/g,"");
 						var entity = val[0].entityType;
@@ -418,8 +418,8 @@ window.ScriptEditor = function(config,$,Q)	{
 									***/
 									makeRESTcall();
 								}else{
-									console.log("|#|Fn: "+se._config.FunctionName+" >>>getFormLookupValue ended<<< result: "+propertyValue.value+"|#|");
-									resolve(propertyValue.value);
+									console.log("|#|Fn: "+se._config.FunctionName+" >>>getFormLookupValue ended<<< result: "+(propertyValue.value||"")+"|#|");
+									resolve((propertyValue.value||""));
 								}
 							/****/
 							}
