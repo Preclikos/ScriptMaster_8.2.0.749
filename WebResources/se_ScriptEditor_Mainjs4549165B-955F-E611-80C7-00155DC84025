@@ -1167,6 +1167,21 @@ window.ScriptEditor = function(config,$,Q)	{
 		});
 	}
 	
+	/// <summary>
+	/// gets user language
+	/// returns string language lcid
+	/// </summary>
+	/// <param name="args" type="array" mayBeNull="false" optional="false" >
+	/// @args	:	none
+	/// </param>
+	var getUserLanguage = function(args){
+		var se = this;
+		return new Q.Promise(function(resolve,reject){
+			var lcid = Xrm.Page.context.getUserLcid().toString();
+			resolve(lcid);
+		});
+	}
+	
 	var assign = function(){
 		var se = this;
 		//assign to correct event/field/button/whatever...
@@ -1273,6 +1288,7 @@ window.ScriptEditor = function(config,$,Q)	{
 		addNotification		:	addNotification,
 		removeNotification	:	removeNotification,
 		getFormType			:	getFormType,
+		getUserLanguage		:	getUserLanguage,
 		cachedCalls			:	{}
 	};
 };
